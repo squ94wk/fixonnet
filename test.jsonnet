@@ -50,6 +50,11 @@ local tests = [
     expr: function() f(mixin0).rules.group("group0").rename("group2"),
     test: function(res) res.rules.groups[0].name == "group2",
   },
+  {
+    name: "rules.group(name).add(newRule) adds rule",
+    expr: function() f(mixin0).rules.group("group0").add(rules[1]),
+    test: function(res) std.length(res.rules.groups[0].rules) == 2 && res.rules.groups[0].rules[1] == rules[1],
+  },
 ];
 
 local test = function(case)

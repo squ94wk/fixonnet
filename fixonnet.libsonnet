@@ -21,6 +21,19 @@ local rules = function(sup) {
             ],
           },
         },
+      add:: function(rule)
+        sup {
+          rules+: {
+            groups: [
+              if group.name == name then
+              group {
+                rules+: [rule],
+              }
+              else group
+              for group in super.groups
+            ],
+          },
+        },
       rules:: function() null,
     },
 };
