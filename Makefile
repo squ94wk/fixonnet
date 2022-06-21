@@ -1,0 +1,2 @@
+test:
+	jsonnet test.jsonnet
