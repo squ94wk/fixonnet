@@ -2,7 +2,14 @@ local f = import './fixonnet.libsonnet';
 
 local rules = [
   {
-    name: "rule%d" % i,
+    record: "rule%d" % i,
+    expr: "vector(%d)" % i,
+  } for i in std.range(0, 10)
+];
+
+local alerts = [
+  {
+    alert: "alert%d" % i,
     expr: "vector(%d)" % i,
   } for i in std.range(0, 10)
 ];
@@ -21,10 +28,26 @@ local group1 = {
   ],
 };
 
+local group2 = {
+  name: "group2",
+  rules: [
+    rules[2],
+    alerts[0],
+  ],
+};
+
 local mixin0 = {
   rules: {
     groups: [
       group0,
+    ],
+  },
+};
+
+local mixin1 = {
+  rules: {
+    groups: [
+      group2,
     ],
   },
 };
@@ -54,6 +77,11 @@ local tests = [
     name: "rules.group(name).add(newRule) adds rule",
     expr: function() f(mixin0).rules.group("group0").add(rules[1]),
     test: function(res) std.length(res.rules.groups[0].rules) == 2 && res.rules.groups[0].rules[1] == rules[1],
+  },
+  {
+    name: "rules.group(name).rules(cond).drop() drops rule",
+    expr: function() f(mixin1).rules.group("group2").rules(function(rule) "alert" in rule && rule.alert == "alert0").drop(),
+    test: function(res) std.length(res.rules.groups[0].rules) == 1,
   },
 ];
 
