@@ -85,11 +85,11 @@ local tests = [
   },
 ];
 
-local test = function(case)
+local eval = function(case)
   local value = case.expr();
   {
     name: case.name,
-  } + if case.test(value) then {
+  } + if (std.isArray(case.test) && [] == std.find(false, [test(value) for test in case.test])) || (std.isFunction(case.test) && case.test(value)) then {
     result: 'PASSED',
   } else {
     result: 'FAILED',
@@ -97,6 +97,6 @@ local test = function(case)
   }
 ;
 
-[
-  test(case) for case in tests
-]
+[test for test in [
+  eval(case) for case in tests
+] if test.result == 'FAILED']
