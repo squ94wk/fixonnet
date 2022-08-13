@@ -42,7 +42,7 @@ local rules = function(sup) {
                 if group.name == name then
                 group {
                   rules: [
-                    if cond(rule) then rule + patch else rule for rule in group.rules
+                    if cond(rule) then (if std.isFunction(patch) then patch(rule) else rule + patch) else rule for rule in group.rules
                   ],
                 }
                 else group

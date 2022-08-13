@@ -91,6 +91,14 @@ local tests = [
       function(res) res.rules.groups[0].rules[1].alert == "alert1",
     ],
   },
+  {
+    name: "rules.group(name).rules(cond).patch(patchFunc) patches rule using a function",
+    expr: function() f(mixin1).rules.group("group2").rules(function(rule) "alert" in rule && rule.alert == "alert0").patch(function(rule) rule + {alert: std.strReplace(rule.alert, "alert", "funk")}),
+    test: [
+      function(res) std.length(res.rules.groups[0].rules) == 2,
+      function(res) res.rules.groups[0].rules[1].alert == "funk0",
+    ],
+  },
 ];
 
 local eval = function(case)
