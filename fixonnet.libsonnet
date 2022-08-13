@@ -5,14 +5,15 @@ local rules = function(sup) {
         groups+: [group],
       },
     },
-  group:: function(name)
+  group:: function(selector)
+    local selectorFunc = if std.isString(selector) then function(group) group.name == selector else if std.isFunction(selector) then function(group) selector(group);
     {
       drop:: function() null,
       rename:: function(newName)
         sup {
           rules+: {
             groups: [
-              if group.name == name then
+              if selectorFunc(group) then
               group {
                 name: newName,
               }
@@ -25,7 +26,7 @@ local rules = function(sup) {
         sup {
           rules+: {
             groups: [
-              if group.name == name then
+              if selectorFunc(group) then
               group {
                 rules+: [rule],
               }
@@ -39,7 +40,7 @@ local rules = function(sup) {
           sup {
             rules+: {
               groups: [
-                if group.name == name then
+                if selectorFunc(group) then
                 group {
                   rules: [
                     if cond(rule) then (if std.isFunction(patch) then patch(rule) else rule + patch) else rule for rule in group.rules
@@ -54,7 +55,7 @@ local rules = function(sup) {
           sup {
             rules+: {
               groups: [
-                if group.name == name then
+                if selectorFunc(group) then
                 group {
                   rules: [
                     rule for rule in group.rules if !cond(rule)

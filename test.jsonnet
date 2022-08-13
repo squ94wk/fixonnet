@@ -48,6 +48,7 @@ local mixin1 = {
   rules: {
     groups: [
       group2,
+      group1,
     ],
   },
 };
@@ -97,6 +98,14 @@ local tests = [
     test: [
       function(res) std.length(res.rules.groups[0].rules) == 2,
       function(res) res.rules.groups[0].rules[1].alert == "funk0",
+    ],
+  },
+  {
+    name: "rules.group(func).rename changes name",
+    expr: function() f(mixin1).rules.group(function(group) group.name == "group2").rename("group1"),
+    test: [
+      function(res) std.length(res.rules.groups) == 2,
+      function(res) res.rules.groups[0].name == "group1",
     ],
   },
 ];
