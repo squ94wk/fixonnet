@@ -16,10 +16,11 @@ f(raw).rules.group("group").rules(cond).patch(patch)
 f(raw).rules.group("group").rules(cond).patch(patchFunc)
 
 f(raw).rules.groups(condition).<group op>()
+
+f(raw).merge(raw)
 ```
 
 Future:
 ```
-f(raw).merge(raw)
 f(raw).apply([]fixup)
 ```

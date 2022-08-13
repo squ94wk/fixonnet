@@ -108,6 +108,16 @@ local tests = [
       function(res) res.rules.groups[0].name == "group1",
     ],
   },
+  {
+    name: "f(a).merge(b) merges deeply",
+    expr: function() f(mixin0).merge([f(mixin1), f(mixin1)]),
+    test: [
+      // Merge mixin1
+      function(res) std.length(res.rules.groups) == 3,
+      // Discard duplicate nested rules
+      function(res) std.length(res.rules.groups[1].rules) == 2,
+    ],
+  },
 ];
 
 local eval = function(case)
