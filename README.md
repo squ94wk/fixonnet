@@ -10,11 +10,11 @@ f(raw).rules.group("group").rename("newGroup")
 f(raw).rules.group("group").drop()
 f(raw).rules.group("group").add(rule)
 f(raw).rules.group("group").rules(cond).drop()
+f(raw).rules.group("group").rules(cond).patch(patch)
 ```
 
 Future:
 ```
-f(raw).rules.group("group").rules(cond).patch(newRule)
 f(raw).rules.group("group").rules(cond).patchFunc(patchFunc)
 f(raw).merge(raw)
 f(raw).apply([]fixup)

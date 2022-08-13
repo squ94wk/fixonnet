@@ -35,6 +35,21 @@ local rules = function(sup) {
           },
         },
       rules:: function(cond) {
+        patch:: function(patch)
+          sup {
+            rules+: {
+              groups: [
+                if group.name == name then
+                group {
+                  rules: [
+                    if cond(rule) then rule + patch else rule for rule in group.rules
+                  ],
+                }
+                else group
+                for group in super.groups
+              ],
+            },
+          },
         drop:: function()
           sup {
             rules+: {
