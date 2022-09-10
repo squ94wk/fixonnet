@@ -37,6 +37,7 @@ local group2 = {
 };
 
 local mixin0 = {
+  dashboards: {},
   rules: {
     groups: [
       group0,
@@ -45,6 +46,7 @@ local mixin0 = {
 };
 
 local mixin1 = {
+  dashboards: {},
   rules: {
     groups: [
       group2,
@@ -63,6 +65,11 @@ local tests = [
     name: "drop() returns null",
     expr:: function() f(mixin0).drop(),
     test: function(res) res == null,
+  },
+  {
+    name: "drop() is noop if condition is false",
+    expr:: function() f(mixin0).drop(function() false),
+    test: function(res) res == mixin0,
   },
   {
     name: "rules.add() adds group",
