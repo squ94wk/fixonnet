@@ -112,9 +112,22 @@ local merge = function(a, b)
     }
 ;
 
+local normalize = function(mixin)
+  local fillNulls = {
+    grafanaDashboards: {},
+    prometheusAlerts: {},
+    prometheus_alerts: {},
+    prometheusRules: {},
+  } + mixin;
+  {
+    dashboards: fillNulls.grafanaDashboards,
+    rules: fillNulls.prometheusRules + fillNulls.prometheusAlerts + fillNulls.prometheus_alerts,
+  };
+
 function(mixin)
-  mixin {
-    drop:: function() null,
+  normalize(mixin) {
+    drop:: function(cond)
+      if std.isFunction(cond) && cond() || cond then null else self,
     rules+: rules(self),
     merge:: function(others)
       merge(self, others)
