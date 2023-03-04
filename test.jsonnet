@@ -168,6 +168,24 @@ local tests = [
       function(res) res.dashboards.dashboard0 == dashboards.d0,
     ],
   },
+  {
+    name: "f(a).dashboards.dashboard(name).patch({title: 'some'}) changes dashboard title",
+    expr: function() f(mixin2).dashboards.dashboard('dashboard0').patch({title: "some"}),
+    test: [
+      function(res) std.length(std.objectFields(res.dashboards)) == 2,
+      function(res) res.dashboards.dashboard1 == dashboards.d1,
+      function(res) res.dashboards.dashboard0.title == "some",
+    ],
+  },
+  {
+    name: "f(a).dashboards.dashboard(name).patch(func) changes dashboard title",
+    expr: function() f(mixin2).dashboards.dashboard('dashboard0').patch(function(d) d {title: "thing"}),
+    test: [
+      function(res) std.length(std.objectFields(res.dashboards)) == 2,
+      function(res) res.dashboards.dashboard1 == dashboards.d1,
+      function(res) res.dashboards.dashboard0.title == "thing",
+    ],
+  },
 ];
 
 local eval = function(case)

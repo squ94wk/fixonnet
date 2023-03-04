@@ -88,6 +88,14 @@ local dashboards = function(sup) {
             for key in std.objectFields(sup.dashboards)
           }
         },
+      patch:: function(patch)
+        local patchFunc = if std.isFunction(patch) then patch else function(dashboard) dashboard + patch;
+        sup {
+          dashboards: {
+            [key]: if selectorFunc(key, sup.dashboards[key]) then patchFunc(sup.dashboards[key]) else sup.dashboards[key]
+            for key in std.objectFields(sup.dashboards)
+          }
+        },
     },
 };
 
