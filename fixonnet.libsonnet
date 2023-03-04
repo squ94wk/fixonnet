@@ -23,12 +23,13 @@ local rules = function(sup) {
           },
         },
       add:: function(rule)
+        local addedRules = if std.isArray(rule) then rule else [rule];
         sup {
           rules+: {
             groups: [
               if selectorFunc(group) then
               group {
-                rules+: [rule],
+                rules+: addedRules,
               }
               else group
               for group in super.groups

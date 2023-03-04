@@ -103,7 +103,19 @@ local tests = [
   {
     name: "rules.group(name).add(newRule) adds rule",
     expr: function() f(mixin0).rules.group("group0").add(rules[1]),
-    test: function(res) std.length(res.rules.groups[0].rules) == 2 && res.rules.groups[0].rules[1] == rules[1],
+    test: [
+      function(res) std.length(res.rules.groups[0].rules) == 2,
+      function(res) res.rules.groups[0].rules[1] == rules[1],
+    ],
+  },
+  {
+    name: "rules.group(name).add([rule1, rule2]) adds two rules",
+    expr: function() f(mixin0).rules.group("group0").add([rules[1], rules[2]]),
+    test: [
+      function(res) std.length(res.rules.groups[0].rules) == 3,
+      function(res) res.rules.groups[0].rules[1] == rules[1],
+      function(res) res.rules.groups[0].rules[2] == rules[2],
+    ],
   },
   {
     name: "rules.group(name).rules(cond).drop() drops rule",

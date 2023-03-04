@@ -10,6 +10,7 @@ f(raw).rules.add(group)
 f(raw).rules.group("group").rename("newGroup")
 f(raw).rules.group("group").drop()
 f(raw).rules.group("group").add(rule)
+f(raw).rules.group("group").add([rule, ...])
 
 f(raw).rules.group("group").rules(cond).drop()
 f(raw).rules.group("group").rules(cond).patch(patch)
