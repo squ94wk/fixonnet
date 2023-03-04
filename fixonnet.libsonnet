@@ -74,6 +74,13 @@ local dashboards = function(sup) {
   dashboard:: function(selector)
     local selectorFunc = if std.isString(selector) then function(key, dashboard) key == selector else if std.isFunction(selector) then function(key, dashboard) selector(key, dashboard);
     {
+      drop:: function()
+        sup {
+          dashboards: {
+            [if !selectorFunc(key, sup.dashboards[key]) then key]: sup.dashboards[key]
+            for key in std.objectFields(sup.dashboards)
+          }
+        },
       rename:: function(newName)
         sup {
           dashboards: {

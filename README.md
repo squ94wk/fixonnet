@@ -19,7 +19,9 @@ f(raw).rules.groups(condition).<group op>()
 
 f(raw).merge(raw)
 
+f(raw).dashboards.dashboard('name.json').drop()
 f(raw).dashboards.dashboard('name.json').rename('other.json')
+f(raw).dashboards.dashboard(function(key, dashboard) dashboard.title != "").<dashboard op>()
 ```
 
 Future:

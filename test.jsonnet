@@ -64,6 +64,7 @@ local mixin1 = {
 local mixin2 = {
   dashboards: {
     dashboard0: dashboards.d0,
+    dashboard1: dashboards.d1,
   },
   rules: {
     groups: [
@@ -149,6 +150,22 @@ local tests = [
     test: [
       function(res) 'some' in res.dashboards,
       function(res) res.dashboards["some"] == dashboards.d0,
+    ],
+  },
+  {
+    name: "f(a).dashboards.dashboard(name).drop() drops dashboard",
+    expr: function() f(mixin2).dashboards.dashboard('dashboard0').drop(),
+    test: [
+      function(res) std.length(std.objectFields(res.dashboards)) == 1,
+      function(res) res.dashboards.dashboard1 == dashboards.d1,
+    ],
+  },
+  {
+    name: "f(a).dashboards.dashboard(func).drop() drops matching dashboards",
+    expr: function() f(mixin2).dashboards.dashboard(function(k, d) d.title == "dashboard 1").drop(),
+    test: [
+      function(res) std.length(std.objectFields(res.dashboards)) == 1,
+      function(res) res.dashboards.dashboard0 == dashboards.d0,
     ],
   },
 ];
