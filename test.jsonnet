@@ -14,6 +14,12 @@ local alerts = [
   } for i in std.range(0, 10)
 ];
 
+local dashboards = {
+  ["d%d" % i]: {
+    title: "dashboard %d" % i,
+  } for i in std.range(0, 10)
+};
+
 local group0 = {
   name: "group0",
   rules: [
@@ -47,6 +53,18 @@ local mixin0 = {
 
 local mixin1 = {
   dashboards: {},
+  rules: {
+    groups: [
+      group2,
+      group1,
+    ],
+  },
+};
+
+local mixin2 = {
+  dashboards: {
+    dashboard0: dashboards.d0,
+  },
   rules: {
     groups: [
       group2,
@@ -123,6 +141,14 @@ local tests = [
       function(res) std.length(res.rules.groups) == 3,
       // Discard duplicate nested rules
       function(res) std.length(res.rules.groups[1].rules) == 2,
+    ],
+  },
+  {
+    name: "f(a).dashboards.dashboard(name).rename(newName) renames dashboard",
+    expr: function() f(mixin2).dashboards.dashboard('dashboard0').rename('some'),
+    test: [
+      function(res) 'some' in res.dashboards,
+      function(res) res.dashboards["some"] == dashboards.d0,
     ],
   },
 ];

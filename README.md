@@ -18,6 +18,8 @@ f(raw).rules.group("group").rules(cond).patch(patchFunc)
 f(raw).rules.groups(condition).<group op>()
 
 f(raw).merge(raw)
+
+f(raw).dashboards.dashboard('name.json').rename('other.json')
 ```
 
 Future:

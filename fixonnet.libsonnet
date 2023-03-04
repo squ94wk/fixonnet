@@ -70,6 +70,20 @@ local rules = function(sup) {
     },
 };
 
+local dashboards = function(sup) {
+  dashboard:: function(selector)
+    local selectorFunc = if std.isString(selector) then function(key, dashboard) key == selector else if std.isFunction(selector) then function(key, dashboard) selector(key, dashboard);
+    {
+      rename:: function(newName)
+        sup {
+          dashboards: {
+            [if selectorFunc(key, sup.dashboards[key]) then newName else key]: sup.dashboards[key]
+            for key in std.objectFields(sup.dashboards)
+          }
+        },
+    },
+};
+
 local merge = function(a, b)
   if std.isArray(b) then
     if b == [] then
@@ -132,6 +146,7 @@ function(mixin)
       local condFunc = if std.isFunction(cond) then cond else function() cond;
       if condFunc() then null else self,
     rules+: rules(self),
+    dashboards+: dashboards(self),
     merge:: function(others)
       merge(self, others)
   }
