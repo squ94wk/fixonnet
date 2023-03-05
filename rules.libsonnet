@@ -12,22 +12,9 @@ function(sup) {
         fn.rules.group(selector).rename(name)(sup),
       add:: function(rule)
         fn.rules.group(selector).add(rule)(sup),
-      rules:: function(cond) {
+      rules:: function(ruleSelectorFunc) {
         patch:: function(patch)
-          sup {
-            rules+: {
-              groups: [
-                if selectorFunc(group) then
-                group {
-                  rules: [
-                    if cond(rule) then (if std.isFunction(patch) then patch(rule) else rule + patch) else rule for rule in group.rules
-                  ],
-                }
-                else group
-                for group in super.groups
-              ],
-            },
-          },
+          fn.rules.group(selector).rules(ruleSelectorFunc).patch(patch)(sup),
         drop:: function()
           sup {
             rules+: {
@@ -35,7 +22,7 @@ function(sup) {
                 if selectorFunc(group) then
                 group {
                   rules: [
-                    rule for rule in group.rules if !cond(rule)
+                    rule for rule in group.rules if !ruleSelectorFunc(rule)
                   ],
                 }
                 else group

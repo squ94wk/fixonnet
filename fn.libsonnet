@@ -49,6 +49,27 @@ local helpers = import 'helpers.libsonnet';
               ],
             },
           },
+        rules:: function(ruleSelectorFunc) {
+          patch:: function(patch) function(x)
+            local patchFunc = if std.isFunction(patch) then patch else function(rule) rule + patch;
+            x {
+              rules+: {
+                groups: [
+                  if selectorFunc(group) then
+                    group {
+                      rules: [
+                        if ruleSelectorFunc(rule) then
+                          patchFunc(rule)
+                        else rule
+                        for rule in group.rules
+                      ],
+                    }
+                  else group
+                  for group in super.groups
+                ],
+              },
+            },
+        },
       },
     },
 }
