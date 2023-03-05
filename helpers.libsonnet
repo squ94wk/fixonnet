@@ -56,7 +56,18 @@ local normalize = function(mixin)
     rules: fillNulls.rules + fillNulls.prometheusRules + fillNulls.prometheusAlerts + fillNulls.prometheus_alerts,
   };
 
+local apply = function(x) function(funcs)
+  local funcList = if std.isArray(funcs) then funcs else [funcs];
+  local _apply = function(m, fs)
+    if std.length(fs) == 0 then
+      m
+    else
+      _apply(fs[0](m), fs[1:]) tailstrict;
+  _apply(x, funcList)
+;
+
 {
   merge: merge,
   normalize: normalize,
+  apply: apply,
 }

@@ -90,19 +90,44 @@ local tests = [
     test: function(res) res == mixin0,
   },
   {
-    name: "apply(drop()) returns null",
+    name: "apply(drop()) returns empty",
     expr:: function() f(mixin0).apply(fn.drop()),
     test: function(res) res == empty,
   },
   {
-    name: "drop() returns null",
+    name: "drop() returns empty",
     expr:: function() f(mixin0).drop(),
-    test: function(res) res == null,
+    test: function(res) res == empty,
   },
   {
-    name: "drop() is noop if condition is false",
-    expr:: function() f(mixin0).drop(function() false),
+    name: "apply(drop(), cond=false) is noop",
+    expr:: function() f(mixin0).apply(fn.drop(), condition=false),
     test: function(res) res == mixin0,
+  },
+  {
+    name: "apply(drop(), cond=true) returns empty",
+    expr:: function() f(mixin0).apply(fn.drop(), condition=true),
+    test: function(res) res == empty,
+  },
+  {
+    name: "apply(drop(), cond=function() false) is noop",
+    expr:: function() f(mixin0).apply(fn.drop(), condition=function(x) false),
+    test: function(res) res == mixin0,
+  },
+  {
+    name: "apply(drop(), cond=function() true) returns empty",
+    expr:: function() f(mixin0).apply(fn.drop(), condition=function(x) true),
+    test: function(res) res == empty,
+  },
+  {
+    name: "apply(drop(), cond=<has more than 1 group>) is noop on minix0",
+    expr:: function() f(mixin0).apply(fn.drop(), condition=function(x) std.length(x.rules.groups) > 1),
+    test: function(res) res == mixin0,
+  },
+  {
+    name: "apply(drop(), cond=<has more than 1 group>) returns empty on minix1",
+    expr:: function() f(mixin1).apply(fn.drop(), condition=function(x) std.length(x.rules.groups) > 1),
+    test: function(res) res == empty,
   },
   {
     name: "rules.add() adds group",
