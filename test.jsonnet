@@ -90,12 +90,12 @@ local tests = [
     test: function(res) res == mixin0,
   },
   {
-    name: "apply(drop()) returns null",
+    name: "apply(drop()) returns empty",
     expr:: function() f(mixin0).apply(fn.drop()),
     test: function(res) res == empty,
   },
   {
-    name: "drop() returns null",
+    name: "drop() returns empty",
     expr:: function() f(mixin0).drop(),
     test: function(res) res == null,
   },
