@@ -111,12 +111,22 @@ local tests = [
   },
   {
     name: "apply(drop(), cond=function() false) is noop",
-    expr:: function() f(mixin0).apply(fn.drop(), condition=function() false),
+    expr:: function() f(mixin0).apply(fn.drop(), condition=function(x) false),
     test: function(res) res == mixin0,
   },
   {
     name: "apply(drop(), cond=function() true) returns empty",
-    expr:: function() f(mixin0).apply(fn.drop(), condition=function() true),
+    expr:: function() f(mixin0).apply(fn.drop(), condition=function(x) true),
+    test: function(res) res == empty,
+  },
+  {
+    name: "apply(drop(), cond=<has more than 1 group>) is noop on minix0",
+    expr:: function() f(mixin0).apply(fn.drop(), condition=function(x) std.length(x.rules.groups) > 1),
+    test: function(res) res == mixin0,
+  },
+  {
+    name: "apply(drop(), cond=<has more than 1 group>) returns empty on minix1",
+    expr:: function() f(mixin1).apply(fn.drop(), condition=function(x) std.length(x.rules.groups) > 1),
     test: function(res) res == empty,
   },
   {

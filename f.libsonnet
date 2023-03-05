@@ -31,9 +31,9 @@ function(mixin)
     dashboards+: dashboards(self),
     merge:: function(others)
       helpers.merge(self, others),
-    apply:: function(funcs, condition=function() true)
-      local conditionFunc = if std.isFunction(condition) then condition else function() condition;
-      if conditionFunc() then
+    apply:: function(funcs, condition=function(x) true)
+      local conditionFunc = if std.isFunction(condition) then condition else function(x) condition;
+      if conditionFunc(self) then
         helpers.apply(self)(funcs)
       else
         self
