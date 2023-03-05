@@ -12,9 +12,9 @@ f(raw).rules.group("group").drop()
 f(raw).rules.group("group").add(rule)
 f(raw).rules.group("group").add([rule, ...])
 
-f(raw).rules.group("group").rules(cond).drop()
-f(raw).rules.group("group").rules(cond).patch(patch)
-f(raw).rules.group("group").rules(cond).patch(patchFunc)
+f(raw).rules.group("group").rule(cond).drop()
+f(raw).rules.group("group").rule(cond).patch(patch)
+f(raw).rules.group("group").rule(cond).patch(patchFunc)
 
 f(raw).rules.groups(condition).<group op>()
 
