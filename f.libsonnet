@@ -12,10 +12,11 @@ function(mixin)
     merge:: function(others)
       helpers.merge(self, others),
     apply:: function(funcs)
-      local _apply = function(m, funcs)
-        if std.length(funcs) == 0 then
+      local funcList = if std.isArray(funcs) then funcs else [funcs];
+      local _apply = function(m, fs)
+        if std.length(fs) == 0 then
           m
         else
-          _apply(funcs[0](m), funcs[1:]) tailstrict;
-      _apply(self, funcs),
+          _apply(fs[0](m), fs[1:]) tailstrict;
+      _apply(self, funcList),
   }

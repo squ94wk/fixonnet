@@ -91,7 +91,7 @@ local tests = [
   },
   {
     name: "apply(drop()) returns null",
-    expr:: function() f(mixin0).apply([fn.drop()]),
+    expr:: function() f(mixin0).apply(fn.drop()),
     test: function(res) res == empty,
   },
   {
@@ -111,8 +111,13 @@ local tests = [
   },
   {
     name: "apply(rules.add()) adds group",
-    expr:: function() f(mixin0).apply([fn.rules.add(group1)]),
+    expr:: function() f(mixin0).apply(fn.rules.add(group1)),
     test: function(res) std.length(res.rules.groups) == 2,
+  },
+  {
+    name: "apply([rules.add(), rules.add()]) adds 2 groups",
+    expr:: function() f(mixin0).apply([fn.rules.add(group1), fn.rules.add(group2)]),
+    test: function(res) std.length(res.rules.groups) == 3,
   },
   {
     name: "rules.group(name).rename() changes name",
@@ -121,7 +126,7 @@ local tests = [
   },
   {
     name: "apply(rules.group(name).rename()) changes name",
-    expr: function() f(mixin0).apply([fn.rules.group("group0").rename("group2")]),
+    expr: function() f(mixin0).apply(fn.rules.group("group0").rename("group2")),
     test: function(res) res.rules.groups[0].name == "group2",
   },
   {
@@ -134,7 +139,7 @@ local tests = [
   },
   {
     name: "apply(rules.group(name).drop()) drops group",
-    expr: function() f(mixin1).apply([fn.rules.group("group1").drop()]),
+    expr: function() f(mixin1).apply(fn.rules.group("group1").drop()),
     test: [
       function(res) std.length(res.rules.groups) == 1,
       function(res) res.rules.groups[0].name == "group2",
