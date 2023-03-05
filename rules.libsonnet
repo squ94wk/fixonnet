@@ -11,19 +11,7 @@ function(sup) {
       rename:: function(name)
         fn.rules.group(selector).rename(name)(sup),
       add:: function(rule)
-        local addedRules = if std.isArray(rule) then rule else [rule];
-        sup {
-          rules+: {
-            groups: [
-              if selectorFunc(group) then
-              group {
-                rules+: addedRules,
-              }
-              else group
-              for group in super.groups
-            ],
-          },
-        },
+        fn.rules.group(selector).add(rule)(sup),
       rules:: function(cond) {
         patch:: function(patch)
           sup {

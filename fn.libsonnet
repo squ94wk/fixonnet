@@ -35,6 +35,20 @@ local helpers = import 'helpers.libsonnet';
               ],
             },
           },
+        add:: function(rule) function(x)
+          local addedRules = if std.isArray(rule) then rule else [rule];
+          x {
+            rules+: {
+              groups: [
+                if selectorFunc(group) then
+                group {
+                  rules+: addedRules,
+                }
+                else group
+                for group in super.groups
+              ],
+            },
+          },
       },
     },
 }
