@@ -97,12 +97,7 @@ local tests = [
   {
     name: "drop() returns empty",
     expr:: function() f(mixin0).drop(),
-    test: function(res) res == null,
-  },
-  {
-    name: "drop() is noop if condition is false",
-    expr:: function() f(mixin0).drop(function() false),
-    test: function(res) res == mixin0,
+    test: function(res) res == empty,
   },
   {
     name: "rules.add() adds group",

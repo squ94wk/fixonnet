@@ -25,9 +25,8 @@ local rules = function(sup) {
 
 function(mixin)
   helpers.normalize(mixin) {
-    drop:: function(cond=function() true)
-      local condFunc = if std.isFunction(cond) then cond else function() cond;
-      if condFunc() then null else self,
+    drop:: function()
+      fn.drop()(self),
     rules+: rules(self),
     dashboards+: dashboards(self),
     merge:: function(others)
