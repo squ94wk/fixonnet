@@ -49,7 +49,7 @@ local helpers = import 'helpers.libsonnet';
               ],
             },
           },
-        rules:: function(ruleSelectorFunc) {
+        rule:: function(ruleSelectorFunc) {
           patch:: function(patch) function(x)
             local patchFunc = if std.isFunction(patch) then patch else function(rule) rule + patch;
             x {

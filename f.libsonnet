@@ -14,11 +14,11 @@ local rules = function(sup) {
         fn.rules.group(selector).rename(name)(sup),
       add:: function(rule)
         fn.rules.group(selector).add(rule)(sup),
-      rules:: function(ruleSelectorFunc) {
+      rule:: function(ruleSelectorFunc) {
         patch:: function(patch)
-          fn.rules.group(selector).rules(ruleSelectorFunc).patch(patch)(sup),
+          fn.rules.group(selector).rule(ruleSelectorFunc).patch(patch)(sup),
         drop:: function()
-          fn.rules.group(selector).rules(ruleSelectorFunc).drop()(sup),
+          fn.rules.group(selector).rule(ruleSelectorFunc).drop()(sup),
       },
     },
 };
