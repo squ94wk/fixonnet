@@ -100,6 +100,26 @@ local tests = [
     test: function(res) res == empty,
   },
   {
+    name: "apply(drop(), cond=false) is noop",
+    expr:: function() f(mixin0).apply(fn.drop(), condition=false),
+    test: function(res) res == mixin0,
+  },
+  {
+    name: "apply(drop(), cond=true) returns empty",
+    expr:: function() f(mixin0).apply(fn.drop(), condition=true),
+    test: function(res) res == empty,
+  },
+  {
+    name: "apply(drop(), cond=function() false) is noop",
+    expr:: function() f(mixin0).apply(fn.drop(), condition=function() false),
+    test: function(res) res == mixin0,
+  },
+  {
+    name: "apply(drop(), cond=function() true) returns empty",
+    expr:: function() f(mixin0).apply(fn.drop(), condition=function() true),
+    test: function(res) res == empty,
+  },
+  {
     name: "rules.add() adds group",
     expr:: function() f(mixin0).rules.add(group1),
     test: function(res) std.length(res.rules.groups) == 2,

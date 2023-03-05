@@ -27,6 +27,8 @@ f(raw).dashboards.dashboard('name.json').patch(function(dashboard) dashboard {ti
 f(raw).dashboards.dashboard(function(key, dashboard) dashboard.title != "").<dashboard op>()
 
 f(raw).apply([]fixup)
+f(raw).apply([]fixup, <condition>)
+f(raw).apply([]fixup, <condition function>)
 ```
 
 Future:
