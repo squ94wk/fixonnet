@@ -1,5 +1,6 @@
 local fixups = import './fixonnet.libsonnet';
 local f = fixups.f;
+local fn = fixups.fn;
 
 local rules = [
   {
@@ -89,6 +90,11 @@ local tests = [
     test: function(res) res == mixin0,
   },
   {
+    name: "apply(drop()) returns null",
+    expr:: function() f(mixin0).apply([fn.drop()]),
+    test: function(res) res == empty,
+  },
+  {
     name: "drop() returns null",
     expr:: function() f(mixin0).drop(),
     test: function(res) res == null,
@@ -104,9 +110,35 @@ local tests = [
     test: function(res) std.length(res.rules.groups) == 2,
   },
   {
-    name: "rules.group(name).rename changes name",
+    name: "apply(rules.add()) adds group",
+    expr:: function() f(mixin0).apply([fn.rules.add(group1)]),
+    test: function(res) std.length(res.rules.groups) == 2,
+  },
+  {
+    name: "rules.group(name).rename() changes name",
     expr: function() f(mixin0).rules.group("group0").rename("group2"),
     test: function(res) res.rules.groups[0].name == "group2",
+  },
+  {
+    name: "apply(rules.group(name).rename()) changes name",
+    expr: function() f(mixin0).apply([fn.rules.group("group0").rename("group2")]),
+    test: function(res) res.rules.groups[0].name == "group2",
+  },
+  {
+    name: "rules.group(name).drop() drops group",
+    expr: function() f(mixin1).rules.group("group1").drop(),
+    test: [
+      function(res) std.length(res.rules.groups) == 1,
+      function(res) res.rules.groups[0].name == "group2",
+    ],
+  },
+  {
+    name: "apply(rules.group(name).drop()) drops group",
+    expr: function() f(mixin1).apply([fn.rules.group("group1").drop()]),
+    test: [
+      function(res) std.length(res.rules.groups) == 1,
+      function(res) res.rules.groups[0].name == "group2",
+    ],
   },
   {
     name: "rules.group(name).add(newRule) adds rule",

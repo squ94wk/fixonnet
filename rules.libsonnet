@@ -1,27 +1,15 @@
+local fn = import 'fn.libsonnet';
+
 function(sup) {
   add:: function(group)
-    sup {
-      rules+: {
-        groups+: [group],
-      },
-    },
+    fn.rules.add(group)(sup),
   group:: function(selector)
     local selectorFunc = if std.isString(selector) then function(group) group.name == selector else if std.isFunction(selector) then function(group) selector(group);
     {
-      drop:: function() null,
-      rename:: function(newName)
-        sup {
-          rules+: {
-            groups: [
-              if selectorFunc(group) then
-              group {
-                name: newName,
-              }
-              else group
-              for group in super.groups
-            ],
-          },
-        },
+      drop:: function()
+        fn.rules.group(selector).drop()(sup),
+      rename:: function(name)
+        fn.rules.group(selector).rename(name)(sup),
       add:: function(rule)
         local addedRules = if std.isArray(rule) then rule else [rule];
         sup {
