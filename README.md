@@ -25,9 +25,11 @@ f(raw).dashboards.dashboard('name.json').rename('other.json')
 f(raw).dashboards.dashboard('name.json').patch({title: "Some Overview"})
 f(raw).dashboards.dashboard('name.json').patch(function(dashboard) dashboard {title: "Some Overview"})
 f(raw).dashboards.dashboard(function(key, dashboard) dashboard.title != "").<dashboard op>()
+
+f(raw).apply([]fixup)
 ```
 
 Future:
 ```
-f(raw).apply([]fixup)
+more dashboards functions
 ```
