@@ -1,4 +1,6 @@
-local f = import './fixonnet.libsonnet';
+local fixups = import './fixonnet.libsonnet';
+local f = fixups.f;
+local fn = fixups.fn;
 
 local rules = [
   {
@@ -42,6 +44,13 @@ local group2 = {
   ],
 };
 
+local empty = {
+  dashboards: {},
+  rules: {
+    groups: [],
+  },
+};
+
 local mixin0 = {
   dashboards: {},
   rules: {
@@ -81,6 +90,11 @@ local tests = [
     test: function(res) res == mixin0,
   },
   {
+    name: "apply(drop()) returns null",
+    expr:: function() f(mixin0).apply(fn.drop()),
+    test: function(res) res == empty,
+  },
+  {
     name: "drop() returns null",
     expr:: function() f(mixin0).drop(),
     test: function(res) res == null,
@@ -96,9 +110,40 @@ local tests = [
     test: function(res) std.length(res.rules.groups) == 2,
   },
   {
-    name: "rules.group(name).rename changes name",
+    name: "apply(rules.add()) adds group",
+    expr:: function() f(mixin0).apply(fn.rules.add(group1)),
+    test: function(res) std.length(res.rules.groups) == 2,
+  },
+  {
+    name: "apply([rules.add(), rules.add()]) adds 2 groups",
+    expr:: function() f(mixin0).apply([fn.rules.add(group1), fn.rules.add(group2)]),
+    test: function(res) std.length(res.rules.groups) == 3,
+  },
+  {
+    name: "rules.group(name).rename() changes name",
     expr: function() f(mixin0).rules.group("group0").rename("group2"),
     test: function(res) res.rules.groups[0].name == "group2",
+  },
+  {
+    name: "apply(rules.group(name).rename()) changes name",
+    expr: function() f(mixin0).apply(fn.rules.group("group0").rename("group2")),
+    test: function(res) res.rules.groups[0].name == "group2",
+  },
+  {
+    name: "rules.group(name).drop() drops group",
+    expr: function() f(mixin1).rules.group("group1").drop(),
+    test: [
+      function(res) std.length(res.rules.groups) == 1,
+      function(res) res.rules.groups[0].name == "group2",
+    ],
+  },
+  {
+    name: "apply(rules.group(name).drop()) drops group",
+    expr: function() f(mixin1).apply(fn.rules.group("group1").drop()),
+    test: [
+      function(res) std.length(res.rules.groups) == 1,
+      function(res) res.rules.groups[0].name == "group2",
+    ],
   },
   {
     name: "rules.group(name).add(newRule) adds rule",
@@ -118,13 +163,34 @@ local tests = [
     ],
   },
   {
+    name: "apply(rules.group(name).add(newRule)) adds rule",
+    expr: function() f(mixin0).apply(fn.rules.group("group0").add(rules[1])),
+    test: [
+      function(res) std.length(res.rules.groups[0].rules) == 2,
+      function(res) res.rules.groups[0].rules[1] == rules[1],
+    ],
+  },
+  {
     name: "rules.group(name).rules(cond).drop() drops rule",
     expr: function() f(mixin1).rules.group("group2").rules(function(rule) "alert" in rule && rule.alert == "alert0").drop(),
     test: function(res) std.length(res.rules.groups[0].rules) == 1,
   },
   {
+    name: "apply(rules.group(name).rules(cond).drop()) drops rule",
+    expr: function() f(mixin1).apply(fn.rules.group("group2").rules(function(rule) "alert" in rule && rule.alert == "alert0").drop()),
+    test: function(res) std.length(res.rules.groups[0].rules) == 1,
+  },
+  {
     name: "rules.group(name).rules(cond).patch(patch) patches rule",
     expr: function() f(mixin1).rules.group("group2").rules(function(rule) "alert" in rule && rule.alert == "alert0").patch({alert: "alert1"}),
+    test: [
+      function(res) std.length(res.rules.groups[0].rules) == 2,
+      function(res) res.rules.groups[0].rules[1].alert == "alert1",
+    ],
+  },
+  {
+    name: "apply(rules.group(name).rules(cond).patch(patch)) patches rule",
+    expr: function() f(mixin1).apply(fn.rules.group("group2").rules(function(rule) "alert" in rule && rule.alert == "alert0").patch({alert: "alert1"})),
     test: [
       function(res) std.length(res.rules.groups[0].rules) == 2,
       function(res) res.rules.groups[0].rules[1].alert == "alert1",
