@@ -1,4 +1,5 @@
-local f = import './fixonnet.libsonnet';
+local fixups = import './fixonnet.libsonnet';
+local f = fixups.f;
 
 local rules = [
   {
@@ -40,6 +41,13 @@ local group2 = {
     rules[2],
     alerts[0],
   ],
+};
+
+local empty = {
+  dashboards: {},
+  rules: {
+    groups: [],
+  },
 };
 
 local mixin0 = {
