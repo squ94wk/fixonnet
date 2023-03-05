@@ -16,20 +16,7 @@ function(sup) {
         patch:: function(patch)
           fn.rules.group(selector).rules(ruleSelectorFunc).patch(patch)(sup),
         drop:: function()
-          sup {
-            rules+: {
-              groups: [
-                if selectorFunc(group) then
-                group {
-                  rules: [
-                    rule for rule in group.rules if !ruleSelectorFunc(rule)
-                  ],
-                }
-                else group
-                for group in super.groups
-              ],
-            },
-          },
+          fn.rules.group(selector).rules(ruleSelectorFunc).drop()(sup),
       },
     },
 }

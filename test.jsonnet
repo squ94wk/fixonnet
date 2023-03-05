@@ -176,6 +176,11 @@ local tests = [
     test: function(res) std.length(res.rules.groups[0].rules) == 1,
   },
   {
+    name: "apply(rules.group(name).rules(cond).drop()) drops rule",
+    expr: function() f(mixin1).apply(fn.rules.group("group2").rules(function(rule) "alert" in rule && rule.alert == "alert0").drop()),
+    test: function(res) std.length(res.rules.groups[0].rules) == 1,
+  },
+  {
     name: "rules.group(name).rules(cond).patch(patch) patches rule",
     expr: function() f(mixin1).rules.group("group2").rules(function(rule) "alert" in rule && rule.alert == "alert0").patch({alert: "alert1"}),
     test: [

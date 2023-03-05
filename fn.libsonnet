@@ -69,6 +69,23 @@ local helpers = import 'helpers.libsonnet';
                 ],
               },
             },
+          drop:: function() function(x)
+            x {
+              rules+: {
+                groups: [
+                  if selectorFunc(group) then
+                    group {
+                      rules: [
+                        rule
+                        for rule in group.rules
+                        if !ruleSelectorFunc(rule)
+                      ],
+                    }
+                  else group
+                  for group in super.groups
+                ],
+              },
+            },
         },
       },
     },
