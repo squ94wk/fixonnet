@@ -1,41 +1,64 @@
 local fn = import 'fn.libsonnet';
-local dashboards = import 'dashboards.libsonnet';
 local helpers = import 'helpers.libsonnet';
 
-local rules = function(sup) {
+local rules = function(x) {
   add:: function(group)
-    fn.rules.add(group)(sup),
+    fn.rules.add(group)(x),
   group:: function(selector)
-    local selectorFunc = if std.isString(selector) then function(group) group.name == selector else if std.isFunction(selector) then function(group) selector(group);
     {
       drop:: function()
-        fn.rules.group(selector).drop()(sup),
+        fn.rules.group(selector).drop()(x),
       rename:: function(name)
-        fn.rules.group(selector).rename(name)(sup),
+        fn.rules.group(selector).rename(name)(x),
       add:: function(rule)
-        fn.rules.group(selector).add(rule)(sup),
+        fn.rules.group(selector).add(rule)(x),
       rule:: function(ruleSelectorFunc) {
         patch:: function(patch)
-          fn.rules.group(selector).rule(ruleSelectorFunc).patch(patch)(sup),
+          fn.rules.group(selector).rule(ruleSelectorFunc).patch(patch)(x),
         drop:: function()
-          fn.rules.group(selector).rule(ruleSelectorFunc).drop()(sup),
+          fn.rules.group(selector).rule(ruleSelectorFunc).drop()(x),
       },
     },
 };
 
-function(mixin)
-  helpers.normalize(mixin) {
-    drop:: function()
-      fn.drop()(self),
-    rules+: rules(self),
-    dashboards+: dashboards(self),
-    merge:: function(others)
-      helpers.merge(self, others),
-    apply:: function(funcs, condition=function(x) true)
-      local conditionFunc = if std.isFunction(condition) then condition else function(x) condition;
-      if conditionFunc(self) then
-        helpers.apply(self)(funcs)
+local dashboards = function(x) {
+  dashboard:: function(selector)
+    {
+      drop:: function()
+        fn.dashboards.dashboard(selector).drop()(x),
+      rename:: function(name)
+        fn.dashboards.dashboard(selector).rename(name)(x),
+      patch:: function(patch)
+        fn.dashboards.dashboard(selector).patch(patch)(x),
+    }
+};
+
+local augment = function(x) helpers.normalize(x) + {
+  drop:: function()
+    augment({}),
+  rules+: rules(self),
+  dashboards+: dashboards(self),
+  merge:: function(others)
+    local merge = function(a, b)
+      if std.isArray(b) then
+        if b == [] then
+          // nothing to merge (anymore)
+          a
+        else
+          // recursively merge with one element at a time
+          merge(merge(a, b[0]), b[1:])
       else
-        self
-      ,
-  }
+        helpers.merge(a, helpers.normalize(b))
+      ;
+    augment(merge(self, others))
+    ,
+  apply:: function(funcs, condition=function(x) true)
+    local conditionFunc = if std.isFunction(condition) then condition else function(x) condition;
+    if conditionFunc(self) then
+      helpers.apply(self)(funcs)
+    else
+      self
+    ,
+};
+
+augment
