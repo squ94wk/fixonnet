@@ -1,8 +1,7 @@
 local helpers = import 'helpers.libsonnet';
 
-{
-  drop:: function() function(x) helpers.normalize({}),
-  rules+: {
+local fn = {
+  rules: {
     add:: function(group) function(x)
       x {
         rules+: {
@@ -89,4 +88,34 @@ local helpers = import 'helpers.libsonnet';
         },
       },
     },
-}
+  dashboards: {
+    dashboard:: function(selector)
+      local selectorFunc = if std.isString(selector) then function(key, dashboard) key == selector else if std.isFunction(selector) then function(key, dashboard) selector(key, dashboard);
+      {
+        drop:: function() function(x)
+          x {
+            dashboards: {
+              [if !selectorFunc(key, x.dashboards[key]) then key]: x.dashboards[key]
+              for key in std.objectFields(x.dashboards)
+            } + fn.dashboards,
+          },
+        rename:: function(newName) function(x)
+          x {
+            dashboards: {
+              [if selectorFunc(key, x.dashboards[key]) then newName else key]: x.dashboards[key]
+              for key in std.objectFields(x.dashboards)
+            } + fn.dashboards,
+          },
+        patch:: function(patch) function(x)
+          local patchFunc = if std.isFunction(patch) then patch else function(dashboard) dashboard + patch;
+          x {
+            dashboards: {
+              [key]: if selectorFunc(key, x.dashboards[key]) then patchFunc(x.dashboards[key]) else x.dashboards[key]
+              for key in std.objectFields(x.dashboards)
+            } + fn.dashboards,
+          },
+      }
+  },
+};
+
+fn

@@ -1,45 +1,3 @@
-local merge = function(a, b)
-  if std.isArray(b) then
-    if b == [] then
-      // nothing to merge (anymore)
-      a
-    else
-      // recursively merge with one element at a time
-      merge(merge(a, b[0]), b[1:])
-  else
-    local mergeRules = function(rules)
-      local reducer = function(res, rule)
-        local collisions = [r for r in res if ("alert" in r && "alert" in rule && r.alert == rule.alert) || ("record" in r && "record" in rule && r.record == rule.record)];
-        if [] == collisions then
-          res + [rule]
-        else
-          res
-      ;
-      std.foldl(reducer, rules, [])
-    ;
-
-    local mergeGroups = function(groups)
-      local reducer = function(res, group)
-        local collisions = [g for g in res if g.name == group.name];
-        if [] == collisions then
-          res + [group]
-        else
-          local existing = collisions[0];
-          [g for g in res if g.name != group.name] + [{
-            name: existing.name,
-            rules: mergeRules(existing.rules + group.rules),
-          }]
-      ;
-      std.foldl(reducer, groups, [])
-    ;
-
-    a {
-      rules: {
-        groups: mergeGroups(a.rules.groups + b.rules.groups),
-      },
-    }
-;
-
 local normalize = function(mixin)
   local fillNulls = {
     rules: {
@@ -56,6 +14,41 @@ local normalize = function(mixin)
     rules: fillNulls.rules + fillNulls.prometheusRules + fillNulls.prometheusAlerts + fillNulls.prometheus_alerts,
   };
 
+local merge = function(a, b)
+  local mergeRules = function(rules)
+    local reducer = function(res, rule)
+      local collisions = [r for r in res if ("alert" in r && "alert" in rule && r.alert == rule.alert) || ("record" in r && "record" in rule && r.record == rule.record)];
+      if [] == collisions then
+        res + [rule]
+      else
+        res
+    ;
+    std.foldl(reducer, rules, [])
+  ;
+
+  local mergeGroups = function(groups)
+    local reducer = function(res, group)
+      local collisions = [g for g in res if g.name == group.name];
+      if [] == collisions then
+        res + [group]
+      else
+        local existing = collisions[0];
+        [g for g in res if g.name != group.name] + [{
+          name: existing.name,
+          rules: mergeRules(existing.rules + group.rules),
+        }]
+    ;
+    std.foldl(reducer, groups, [])
+  ;
+
+  a {
+    rules: {
+      groups: mergeGroups(a.rules.groups + b.rules.groups),
+    },
+    dashboards: a.dashboards + b.dashboards,
+  }
+;
+
 local apply = function(x) function(funcs)
   local funcList = if std.isArray(funcs) then funcs else [funcs];
   local _apply = function(m, fs)
@@ -67,7 +60,7 @@ local apply = function(x) function(funcs)
 ;
 
 {
-  merge: merge,
   normalize: normalize,
+  merge: merge,
   apply: apply,
 }
