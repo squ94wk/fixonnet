@@ -238,6 +238,16 @@ local tests = [
     ],
   },
   {
+    name: "Subsequent modifications on rules work",
+    expr: function() f(mixin1)
+      .rules.group(function(group) group.name == "group2").rename("group1")
+      .rules.group(function(group) group.name == "group1").rename("group3"),
+    test: [
+      function(res) std.length(res.rules.groups) == 2,
+      function(res) res.rules.groups[0].name == "group3",
+    ],
+  },
+  {
     name: "f(a).merge(b) merges deeply",
     expr: function() f(mixin0).merge([f(mixin1), f(mixin1)]),
     test: [
@@ -287,6 +297,17 @@ local tests = [
       function(res) std.length(std.objectFields(res.dashboards)) == 2,
       function(res) res.dashboards.dashboard1 == dashboards.d1,
       function(res) res.dashboards.dashboard0.title == "thing",
+    ],
+  },
+  {
+    name: "Subsequent modifications on dashboards work",
+    expr: function() f(mixin2)
+      .dashboards.dashboard('dashboard0').patch(function(d) d {title: "thing"})
+      .dashboards.dashboard(function(k, d) d.title == 'thing').patch(function(d) d {title: "thingy"}),
+    test: [
+      function(res) std.length(std.objectFields(res.dashboards)) == 2,
+      function(res) res.dashboards.dashboard1 == dashboards.d1,
+      function(res) res.dashboards.dashboard0.title == "thingy",
     ],
   },
 ];
