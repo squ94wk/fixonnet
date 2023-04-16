@@ -1,6 +1,7 @@
 local helpers = import 'helpers.libsonnet';
 
 local fn = {
+  drop:: function() function(x) x.drop(),
   rules: {
     add:: function(group) function(x)
       x {
