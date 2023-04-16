@@ -46,7 +46,7 @@ local augment = function(x) helpers.normalize(x) + {
           a
         else
           // recursively merge with one element at a time
-          merge(merge(a, b[0]), b[1:])
+          merge(merge(a, b[0]), b[1:]) tailstrict
       else
         helpers.merge(a, helpers.normalize(b))
       ;
