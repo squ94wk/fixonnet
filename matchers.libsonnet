@@ -1,3 +1,5 @@
+// This file exports common selector functions.
+
 {
   alerts: {
     matchSeverity: function(severity)

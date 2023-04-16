@@ -1,3 +1,8 @@
+// This file exports function generators for modifying data.
+// Constructing functions is thereby separated from applying them.
+//
+// Each function yields a function(x) that is meant to be applied through f(raw).apply(...)
+
 local helpers = import 'helpers.libsonnet';
 
 local fn = {

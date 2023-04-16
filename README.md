@@ -2,15 +2,19 @@
 
 A jsonnet library for easily patching monitoring mixins.
 
+## Installation
+
+The library needs to be in one of the import paths passed to `jsonnet`.
+
+A recommended way is to use jsonnet bundler.
+
 ## Usage
 
-Import the library:
 ```jsonnet
+// Import the library
 local f = (import 'github.com/squ94wk/fixonnet/fixonnet.libsonnet').f;
-```
 
-Wrap your data (e.g. imported mixin) into `f()`:
-```jsonnet
+// Wrap your data (e.g. imported mixin) into `f()`:
 f((import 'mixin.jsonnet') + $._config)
 ```
 
@@ -20,7 +24,7 @@ This will:
 2.  Add functions to the object to perform actions with the data
     
     Functions allow to precisely select and modify (drop, add, patch, ...) rules and dashboards.
-    The functions are accessed through hidden fields in the object and can be chained.
+    The functions are accessed through hidden fields in the object and can be chained arbitrarily.
 
 ### Example
 

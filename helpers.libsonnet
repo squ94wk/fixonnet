@@ -1,3 +1,6 @@
+// This file contains helper functions.
+
+// normalize converts raw data into a common format.
 local normalize = function(mixin)
   local fillNulls = {
     rules: {
@@ -14,6 +17,7 @@ local normalize = function(mixin)
     rules: fillNulls.rules + fillNulls.prometheusRules + fillNulls.prometheusAlerts + fillNulls.prometheus_alerts,
   };
 
+// merge deeply combines two datasets.
 local merge = function(a, b)
   local mergeRules = function(rules)
     local reducer = function(res, rule)
@@ -49,6 +53,8 @@ local merge = function(a, b)
   }
 ;
 
+// apply applies fixups expressed as functions
+// See fn.libsonnet
 local apply = function(x) function(funcs)
   local funcList = if std.isArray(funcs) then funcs else [funcs];
   local _apply = function(m, fs)

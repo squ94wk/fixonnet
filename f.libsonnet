@@ -1,3 +1,6 @@
+// This file exports the "augment" function.
+// It enriches raw data with Prometheus rules and Grafana dashboards with functions that modify the data.
+
 local fn = import 'fn.libsonnet';
 local helpers = import 'helpers.libsonnet';
 
@@ -53,6 +56,7 @@ local augment = function(x) helpers.normalize(x) + {
     augment(merge(self, others))
     ,
   apply:: function(funcs, condition=function(x) true)
+    // allow bool or function() bool
     local conditionFunc = if std.isFunction(condition) then condition else function(x) condition;
     if conditionFunc(self) then
       helpers.apply(self)(funcs)
