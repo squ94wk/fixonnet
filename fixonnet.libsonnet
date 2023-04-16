@@ -1,10 +1,7 @@
 // This file is the entrypoint of the library.
 
-local f = import 'f.libsonnet';
-local fn = import 'fn.libsonnet';
-
 {
-  f: f,
-  fn: fn,
+  f: import 'f.libsonnet',
+  fn: import 'fn.libsonnet',
   matchers: import 'matchers.libsonnet',
 }
